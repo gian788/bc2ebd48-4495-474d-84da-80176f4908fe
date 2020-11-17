@@ -1,9 +1,11 @@
+import { useEffect, useState } from 'react';
 import moment from 'moment';
 import clsx from 'clsx';
 import { times } from 'lodash/fp';
 import { makeStyles } from '@material-ui/styles';
 import './App.css';
 import Header from './Header';
+import { getEvents } from './googleCalendarApi';
 
 const useStyles = makeStyles((theme) => {
   console.log(theme);
@@ -36,7 +38,6 @@ const useStyles = makeStyles((theme) => {
       borderWidth: '1px 0 0 0',
       borderStyle: 'solid',
       borderColor: 'silver',
-
       boxSizing: 'border-box',
     },
     cornerBlock: {
@@ -74,7 +75,11 @@ const useStyles = makeStyles((theme) => {
 function App() {
   const classes = useStyles();
   const startOfTheWeek = moment().startOf('week');
-
+  const [events, setEvents] = useState([]);
+  useEffect(() => {
+    getEvents().then(setEvents);
+  }, []);
+  console.log(events);
   return (
     <div className={classes.app}>
       <Header />
