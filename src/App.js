@@ -1,7 +1,20 @@
 import { useEffect, useState } from 'react';
 import moment from 'moment';
 import clsx from 'clsx';
-import { times, map, filter, get, find, flow, values, flatten } from 'lodash/fp';
+import {
+  times,
+  map,
+  filter,
+  get,
+  find,
+  flow,
+  values,
+  flatten,
+  keyBy,
+  mapValues,
+  omit,
+  keys,
+} from 'lodash/fp';
 import { makeStyles } from '@material-ui/styles';
 import './App.css';
 import Header from './Header';
@@ -103,6 +116,9 @@ const useStyles = makeStyles((theme) => {
       fontWeight: 'bold',
     },
     eventTime: {},
+    calendarItemSelected: {
+      background: '#fefefe',
+    },
   };
 });
 
@@ -111,17 +127,32 @@ function App() {
   const startOfTheWeek = moment().startOf('week').add(1, 'days'); // to start the week on monday
   const [eventsByCalendarIds, setEventsByCalendarIds] = useState({});
   const [calendars, setCalendars] = useState([]);
+  const [selectedCalendars, setSelectedCalendars] = useState([]);
   useEffect(() => {
     getCalendars().then(setCalendars);
+    getCalendars().then((calendars) => {
+      setCalendars(calendars);
+      setSelectedCalendars(
+        flow(
+          keyBy('id'),
+          mapValues((v) => true),
+        )(calendars),
+      );
+    });
   }, []);
 
   useEffect(() => {
     console.log(calendars, 'feetch');
     getEventsByCalendarIds(map('id', calendars)).then(setEventsByCalendarIds);
   }, [calendars]); // eslint-disable-line react-hooks/exhaustive-deps
-  const events = flow(values, flatten)(eventsByCalendarIds);
+  const events = flow(
+    values,
+    flatten,
+    filter(({ calendarId }) => selectedCalendars[calendarId]),
+  )(eventsByCalendarIds);
   console.log('app events', events);
   console.log('app calendars', calendars);
+  console.log('app selected calendars', selectedCalendars);
 
   return (
     <div className={classes.app}>
@@ -132,8 +163,15 @@ function App() {
           <div>CALENDARS</div>
           <div>
             {map(
-              ({ backgroundColor, summary }) => (
-                <div className={classes.calendarItem}>
+              ({ id, backgroundColor, summary }) => (
+                <div
+                  className={clsx(classes.calendarItem, {
+                    [classes.calendarItemSelected]: selectedCalendars[id],
+                  })}
+                  onClick={() =>
+                    setSelectedCalendars({ ...selectedCalendars, [id]: !selectedCalendars[id] })
+                  }
+                >
                   <div className={classes.calendarIcon} style={{ backgroundColor }} />
                   <div>{summary}</div>
                 </div>
@@ -200,9 +238,12 @@ function App() {
                       </div>
                     );
                   }, dayEvents)}
-                  {times((i) => {
-                    return <div className={classes.dayHourBlock}></div>;
-                  }, 24)}
+                  {times(
+                    (i) => (
+                      <div className={classes.dayHourBlock}></div>
+                    ),
+                    24,
+                  )}
                 </div>
               </div>
             );
