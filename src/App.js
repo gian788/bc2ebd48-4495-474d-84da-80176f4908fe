@@ -1,11 +1,13 @@
 import { useEffect, useState } from 'react';
 import moment from 'moment';
 import clsx from 'clsx';
-import { times } from 'lodash/fp';
+import { times, map, filter, get, find, flow, values, flatten } from 'lodash/fp';
 import { makeStyles } from '@material-ui/styles';
 import './App.css';
 import Header from './Header';
-import { getEvents } from './googleCalendarApi';
+import { getEventsByCalendarIds, getCalendars } from './googleCalendarApi';
+
+const dayHourBlockHeight = 100;
 
 const useStyles = makeStyles((theme) => {
   console.log(theme);
@@ -21,6 +23,7 @@ const useStyles = makeStyles((theme) => {
     calendar: {
       background: theme.palette.paper,
       display: 'flex',
+      marginBottom: theme.spacing(4),
     },
     dayHeader: {
       padding: theme.spacing(2),
@@ -34,7 +37,7 @@ const useStyles = makeStyles((theme) => {
       marginRight: theme.spacing(0.5),
     },
     dayHourBlock: {
-      height: 40,
+      height: dayHourBlockHeight,
       borderWidth: '1px 0 0 0',
       borderStyle: 'solid',
       borderColor: 'silver',
@@ -45,7 +48,7 @@ const useStyles = makeStyles((theme) => {
       height: 60,
     },
     hourBlockLegend: {
-      height: 40,
+      height: dayHourBlockHeight,
       width: 60,
       fontSize: '0.75rem',
       textAlign: 'right',
@@ -69,23 +72,76 @@ const useStyles = makeStyles((theme) => {
       borderStyle: 'solid',
       borderColor: 'silver',
     },
+
+    leftBar: {
+      padding: theme.spacing(1),
+    },
+    calendarIcon: {
+      width: theme.spacing(2),
+      height: theme.spacing(2),
+      marginRight: theme.spacing(0.5),
+      borderRadius: '50%',
+    },
+    calendarItem: {
+      display: 'flex',
+      alignItems: 'center',
+      padding: theme.spacing(1),
+    },
+    dayHourBlockContainer: {
+      position: 'relative',
+    },
+    event: {
+      position: 'absolute',
+      left: 0,
+      right: theme.spacing(2),
+      color: 'white',
+      padding: theme.spacing(1),
+      boxSizing: 'border-box',
+      fontSize: '0.8rem',
+    },
+    eventSummary: {
+      fontWeight: 'bold',
+    },
+    eventTime: {},
   };
 });
 
 function App() {
   const classes = useStyles();
-  const startOfTheWeek = moment().startOf('week');
-  const [events, setEvents] = useState([]);
+  const startOfTheWeek = moment().startOf('week').add(1, 'days'); // to start the week on monday
+  const [eventsByCalendarIds, setEventsByCalendarIds] = useState({});
+  const [calendars, setCalendars] = useState([]);
   useEffect(() => {
-    getEvents().then(setEvents);
+    getCalendars().then(setCalendars);
   }, []);
-  console.log(events);
+
+  useEffect(() => {
+    console.log(calendars, 'feetch');
+    getEventsByCalendarIds(map('id', calendars)).then(setEventsByCalendarIds);
+  }, [calendars]); // eslint-disable-line react-hooks/exhaustive-deps
+  const events = flow(values, flatten)(eventsByCalendarIds);
+  console.log('app events', events);
+  console.log('app calendars', calendars);
+
   return (
     <div className={classes.app}>
       <Header />
 
       <main className={classes.main}>
-        <div>CALENDARS</div>
+        <div className={classes.leftBar}>
+          <div>CALENDARS</div>
+          <div>
+            {map(
+              ({ backgroundColor, summary }) => (
+                <div className={classes.calendarItem}>
+                  <div className={classes.calendarIcon} style={{ backgroundColor }} />
+                  <div>{summary}</div>
+                </div>
+              ),
+              calendars,
+            )}
+          </div>
+        </div>
         <div className={classes.calendar}>
           <div className={classes.legend}>
             <div className={classes.cornerBlock}></div>
@@ -101,13 +157,18 @@ function App() {
           </div>
 
           {times((i) => {
-            const day = startOfTheWeek.add(i, 'days');
+            const day = moment(startOfTheWeek).add(i, 'days');
+            const dayEvents = filter(
+              ({ start, end }) => moment(start.dateTime).diff(day, 'days') === 0,
+              events,
+            );
+
             return (
               <div className={classes.dayColumn}>
                 <div className={classes.dayHeader}>
                   <div
                     className={clsx(classes.dayOfTheMonth, {
-                      [classes.dayOfTheMonthToday]: moment().diff(day, 'days') === 0,
+                      [classes.dayOfTheMonthToday]: moment().dayOfYear() === day.dayOfYear(),
                     })}
                   >
                     {day.format('D')}
@@ -115,7 +176,30 @@ function App() {
                   <div className={classes.dayOfThWeek}>{day.format('dddd')}</div>
                 </div>
 
-                <div className={classes.dayHourBlock}>
+                <div className={classes.dayHourBlockContainer}>
+                  {map((event) => {
+                    const top = moment(event.start.dateTime).hours() * dayHourBlockHeight;
+                    const minutes = moment(event.end.dateTime).diff(
+                      event.start.dateTime,
+                      'minutes',
+                    );
+                    const height = (minutes / 60) * dayHourBlockHeight;
+
+                    const backgroundColor = get(
+                      'backgroundColor',
+                      find({ id: event.calendarId }, calendars),
+                    );
+
+                    return (
+                      <div className={classes.event} style={{ top, height, backgroundColor }}>
+                        <div className={classes.eventSummary}>{event.summary}</div>
+                        <div className={classes.eventTime}>
+                          {moment(event.start.dateTime).format('h')} -{' '}
+                          {moment(event.end.dateTime).format('h a')}
+                        </div>
+                      </div>
+                    );
+                  }, dayEvents)}
                   {times((i) => {
                     return <div className={classes.dayHourBlock}></div>;
                   }, 24)}

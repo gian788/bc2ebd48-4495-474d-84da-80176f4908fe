@@ -1,3 +1,6 @@
+import moment from 'moment';
+import { map, forEach } from 'lodash/fp';
+
 const gapi = window.gapi;
 
 // Client ID and API key from the Developer Console
@@ -11,8 +14,8 @@ var DISCOVERY_DOCS = ['https://www.googleapis.com/discovery/v1/apis/calendar/v3/
 // included, separated by spaces.
 var SCOPES = 'https://www.googleapis.com/auth/calendar.readonly';
 
-export const getEvents = async () => {
-  return new Promise((resolve) => {
+const checkAuth = async () =>
+  new Promise((resolve, reject) => {
     gapi.load('client:auth2', async () => {
       await gapi.client.init({
         apiKey: API_KEY,
@@ -26,22 +29,51 @@ export const getEvents = async () => {
         if (!isSignedIn) {
           gapi.auth2.getAuthInstance().signIn();
         } else {
-          gapi.client.calendar.events
-            .list({
-              calendarId: 'primary',
-              timeMin: new Date().toISOString(),
-              showDeleted: false,
-              singleEvents: true,
-              maxResults: 10,
-              orderBy: 'startTime',
-            })
-            .then((response) => {
-              resolve(response.result.items);
-            });
+          resolve();
         }
       } catch (error) {
-        console.log(JSON.stringify(error, null, 2));
+        reject(error);
       }
     });
   });
+
+export const getCalendars = async () => {
+  try {
+    await checkAuth();
+    const response = await gapi.client.calendar.calendarList.list();
+
+    return response.result.items;
+  } catch (error) {
+    console.log(JSON.stringify(error, null, 2));
+  }
+};
+
+export const getEventsByCalendarIds = async (calendarIds) => {
+  try {
+    await checkAuth();
+    const timeMin = moment().startOf('week').toISOString();
+    const timeMax = moment().endOf('week').toISOString();
+    const eventsByCalendarIds = {};
+
+    await Promise.all(
+      map(async (id) => {
+        const response = await gapi.client.calendar.events.list({
+          calendarId: id,
+          timeMin,
+          timeMax,
+          showDeleted: false,
+          singleEvents: true,
+          // maxResults: 10,
+          orderBy: 'startTime',
+        });
+        eventsByCalendarIds[id] = response.result.items;
+        forEach((event) => {
+          event.calendarId = id;
+        }, eventsByCalendarIds[id]);
+      }, calendarIds),
+    );
+    return eventsByCalendarIds;
+  } catch (error) {
+    // console.log(JSON.stringify(error, null, 2));
+  }
 };
