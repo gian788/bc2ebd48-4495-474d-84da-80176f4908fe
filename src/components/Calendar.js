@@ -15,7 +15,7 @@ const useStyles = makeStyles(theme => {
       width: '100%',
       borderWidth: '0 1px 0 0',
       borderStyle: 'solid',
-      borderColor: theme.borderColor,
+      borderColor: theme.palette.borderColor,
       borderRadius: theme.borderRadius,
     },
     dayHeader: {
@@ -26,7 +26,7 @@ const useStyles = makeStyles(theme => {
       boxSizing: 'border-box',
       borderWidth: '0 1px 0 0',
       borderStyle: 'solid',
-      borderColor: theme.borderColor,
+      borderColor: theme.palette.borderColor,
     },
     dayOfTheMonth: {
       padding: theme.spacing(1),
@@ -38,7 +38,7 @@ const useStyles = makeStyles(theme => {
       height: dayHourBlockHeight,
       borderWidth: '1px 1px 0 0',
       borderStyle: 'solid',
-      borderColor: theme.borderColor,
+      borderColor: theme.palette.borderColor,
       boxSizing: 'border-box',
     },
     cornerBlock: {
@@ -46,7 +46,7 @@ const useStyles = makeStyles(theme => {
       height: '100%',
       borderWidth: '0 1px 0 0',
       borderStyle: 'solid',
-      borderColor: theme.borderColor,
+      borderColor: theme.palette.borderColor,
       boxSizing: 'border-box',
     },
     legend: {
@@ -65,7 +65,7 @@ const useStyles = makeStyles(theme => {
 
       borderWidth: '0 1px 0 0',
       borderStyle: 'solid',
-      borderColor: theme.borderColor,
+      borderColor: theme.palette.borderColor,
       boxSizing: 'border-box',
     },
     dayOfTheMonthToday: {
@@ -102,7 +102,7 @@ const useStyles = makeStyles(theme => {
       width: '100%',
       borderWidth: '0 0 1px 0',
       borderStyle: 'solid',
-      borderColor: theme.borderColor,
+      borderColor: theme.palette.borderColor,
     },
   };
 });
