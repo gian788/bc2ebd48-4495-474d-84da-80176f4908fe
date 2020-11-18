@@ -1,11 +1,10 @@
 import moment from 'moment';
 import { map, forEach } from 'lodash/fp';
+import { apiKey, clientId } from './config';
 
 const gapi = window.gapi;
 
 // Client ID and API key from the Developer Console
-var CLIENT_ID = '920627203031-p8l6onhpe0jaqj5v3jdh4j9qvbfhfs2t.apps.googleusercontent.com';
-var API_KEY = 'AIzaSyBtM63dJ-bFGJNX254KpS76dE04vetWEYY';
 
 // Array of API discovery doc URLs for APIs used by the quickstart
 var DISCOVERY_DOCS = ['https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest'];
@@ -18,8 +17,8 @@ const checkAuth = async () =>
   new Promise((resolve, reject) => {
     gapi.load('client:auth2', async () => {
       await gapi.client.init({
-        apiKey: API_KEY,
-        clientId: CLIENT_ID,
+        apiKey,
+        clientId,
         discoveryDocs: DISCOVERY_DOCS,
         scope: SCOPES,
       });
