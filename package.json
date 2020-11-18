@@ -19,6 +19,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
+    "lint-file": "eslint",
     "lint-staged": "./lint-staged.sh"
   },
   "pre-commit": "lint-staged",

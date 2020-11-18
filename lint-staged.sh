@@ -14,13 +14,16 @@ exec 1>&2
 # assume there have been no problems
 status=0
 
+files=''
 # loop through newly committed and modified files
 for file in $(git diff-index --name-only --diff-filter AM --cached HEAD); do
-  # lint JS files
   if (echo $file | grep "\.js" | grep -q -v "\.json") then
-    yarn run lint-file $file
-    status=$(( $status == 0 ? $? : $status ))
+		files="${files} ${file}"
   fi
 done
+
+# lint JS files
+yarn run lint-file $files
+status=$(( $status == 0 ? $? : $status ))
 
 exit $status
