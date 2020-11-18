@@ -22,10 +22,10 @@ const checkAuth = async () =>
         discoveryDocs: DISCOVERY_DOCS,
         scope: SCOPES,
       });
-
       try {
         const isSignedIn = gapi.auth2.getAuthInstance().isSignedIn.get();
         if (!isSignedIn) {
+          // gapi.auth2.getAuthInstance().signOut();
           gapi.auth2.getAuthInstance().signIn();
         } else {
           resolve();
