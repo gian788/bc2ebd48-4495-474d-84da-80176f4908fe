@@ -39,7 +39,7 @@ const App = () => {
 
   useEffect(() => {
     document.getElementById('calendarBody').scrollTop = dayHourBlockHeight * 8 + 1; // shows calendar from 8am
-    getCalendars().then(setCalendars);
+
     getCalendars().then((calendars) => {
       setCalendars(calendars);
       setSelectedCalendars(

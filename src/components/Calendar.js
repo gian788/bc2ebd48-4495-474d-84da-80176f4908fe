@@ -178,7 +178,8 @@ const Calendar = ({ events, calendars }) => {
         {times((i) => {
           const day = moment(startOfTheWeek).add(i, 'days');
           const dayEvents = filter(
-            ({ start, end }) => moment(start.dateTime).diff(day, 'days') === 0,
+            ({ start, end }) =>
+              moment(start.dateTime).format('YYYY-MM-DD') === moment(day).format('YYYY-MM-DD'),
             events,
           );
 
