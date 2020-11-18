@@ -8,7 +8,7 @@ import Calendar from './components/Calendar';
 
 const dayHourBlockHeight = 100;
 
-const useStyles = makeStyles((theme) => {
+const useStyles = makeStyles(theme => {
   // console.log(theme);
   return {
     app: {
@@ -22,6 +22,7 @@ const useStyles = makeStyles((theme) => {
       display: 'flex',
       padding: theme.spacing(2),
       height: 'calc(100% - 50px)',
+      boxSizing: 'border-box',
     },
   };
 });
@@ -40,12 +41,12 @@ const App = () => {
   useEffect(() => {
     document.getElementById('calendarBody').scrollTop = dayHourBlockHeight * 8 + 1; // shows calendar from 8am
 
-    getCalendars().then((calendars) => {
+    getCalendars().then(calendars => {
       setCalendars(calendars);
       setSelectedCalendars(
         flow(
           keyBy('id'),
-          mapValues((v) => true),
+          mapValues(v => true),
         )(calendars),
       );
     });

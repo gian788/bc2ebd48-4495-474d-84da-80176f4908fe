@@ -6,15 +6,16 @@ import { makeStyles } from '@material-ui/styles';
 const dayHourBlockHeight = 100;
 const startOfTheWeek = moment().startOf('week').add(1, 'days'); // to start the week on monday
 
-const useStyles = makeStyles((theme) => {
+const useStyles = makeStyles(theme => {
   return {
     calendar: {
       background: theme.palette.paper,
       display: 'flex',
       flexDirection: 'column',
-      marginBottom: theme.spacing(4),
       width: '100%',
-
+      borderWidth: '0 1px 0 0',
+      borderStyle: 'solid',
+      borderColor: theme.borderColor,
       borderRadius: theme.borderRadius,
     },
     dayHeader: {
@@ -23,9 +24,9 @@ const useStyles = makeStyles((theme) => {
       alignItems: 'center',
       height: 60,
       boxSizing: 'border-box',
-      borderWidth: '0 1px 1px 0',
+      borderWidth: '0 1px 0 0',
       borderStyle: 'solid',
-      borderColor: 'silver',
+      borderColor: theme.borderColor,
     },
     dayOfTheMonth: {
       padding: theme.spacing(1),
@@ -37,7 +38,7 @@ const useStyles = makeStyles((theme) => {
       height: dayHourBlockHeight,
       borderWidth: '1px 1px 0 0',
       borderStyle: 'solid',
-      borderColor: 'silver',
+      borderColor: theme.borderColor,
       boxSizing: 'border-box',
     },
     cornerBlock: {
@@ -45,7 +46,7 @@ const useStyles = makeStyles((theme) => {
       height: '100%',
       borderWidth: '0 1px 0 0',
       borderStyle: 'solid',
-      borderColor: 'silver',
+      borderColor: theme.borderColor,
       boxSizing: 'border-box',
     },
     legend: {
@@ -64,7 +65,7 @@ const useStyles = makeStyles((theme) => {
 
       borderWidth: '0 1px 0 0',
       borderStyle: 'solid',
-      borderColor: 'silver',
+      borderColor: theme.borderColor,
       boxSizing: 'border-box',
     },
     dayOfTheMonthToday: {
@@ -95,11 +96,13 @@ const useStyles = makeStyles((theme) => {
     eventSummary: {
       fontWeight: 'bold',
     },
-    eventTime: {},
     calendarHeader: {
       display: 'flex',
       height: 60,
       width: '100%',
+      borderWidth: '0 0 1px 0',
+      borderStyle: 'solid',
+      borderColor: theme.borderColor,
     },
   };
 });
@@ -109,7 +112,7 @@ const CalendarHeader = () => {
   return (
     <div className={classes.calendarHeader}>
       <div className={classes.cornerBlock}></div>
-      {times((i) => {
+      {times(i => {
         const day = moment(startOfTheWeek).add(i, 'days');
 
         return (
@@ -135,7 +138,7 @@ const Legend = () => {
   const classes = useStyles();
   return (
     <div className={classes.legend}>
-      {times((i) => {
+      {times(i => {
         return (
           <div className={classes.hourBlockLegend} key={i}>
             {moment()
@@ -175,7 +178,7 @@ const Calendar = ({ events, calendars }) => {
       <div className={classes.calendarBody} id="calendarBody">
         <Legend />
 
-        {times((i) => {
+        {times(i => {
           const day = moment(startOfTheWeek).add(i, 'days');
           const dayEvents = filter(
             ({ start, end }) =>
@@ -186,13 +189,13 @@ const Calendar = ({ events, calendars }) => {
           return (
             <div className={classes.dayColumn} key={i}>
               {map(
-                (event) => (
+                event => (
                   <Event event={event} calendars={calendars} key={event.id} />
                 ),
                 dayEvents,
               )}
               {times(
-                (i) => (
+                i => (
                   <div className={classes.dayHourBlock} key={i}></div>
                 ),
                 24,

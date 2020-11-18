@@ -1,12 +1,11 @@
 import moment from 'moment';
 import { makeStyles } from '@material-ui/styles';
 
-const useStyles = makeStyles((theme) => {
-  console.log(theme);
+const useStyles = makeStyles(theme => {
   return {
     header: {
       padding: theme.spacing(2),
-      borderBottom: '1px solid silver',
+      borderBottom: `1px solid ${theme.borderColor}`,
     },
   };
 });

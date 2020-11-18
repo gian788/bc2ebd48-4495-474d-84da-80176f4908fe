@@ -1,0 +1,32 @@
+{
+  "extends": ["react-app"],
+  "plugins": ["no-only-tests"],
+  "rules": {
+    "comma-dangle": [2, "always-multiline"],
+    "no-use-before-define": [0],
+    "no-console": [0],
+    "max-len": [0],
+    "object-curly-newline": [0],
+    "func-names": [0],
+    "arrow-parens": ["error", "as-needed"],
+    "semi": ["error", "always"],
+    "react/prop-types": [0],
+    "react/jsx-filename-extension": [0],
+    "jsx-a11y/href-no-hash": [0],
+    "jsx-a11y/no-autofocus": [0],
+    "jsx-a11y/anchor-is-valid": ["warn", { "aspects": ["invalidHref"] }],
+    "quotes": ["error", "single", { "avoidEscape": true }],
+    "curly": ["error", "all"],
+    "no-unused-vars": "error",
+    "no-duplicate-imports": "error",
+    "object-curly-spacing": ["error", "always"],
+    "no-only-tests/no-only-tests": "error",
+    "no-console": "error"
+  },
+  "settings": {
+    "react": {
+      "pragma": "React",
+      "version": "detect"
+    }
+  }
+}

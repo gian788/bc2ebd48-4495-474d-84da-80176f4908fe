@@ -2,7 +2,7 @@ import clsx from 'clsx';
 import { map } from 'lodash/fp';
 import { makeStyles } from '@material-ui/styles';
 
-const useStyles = makeStyles((theme) => {
+const useStyles = makeStyles(theme => {
   return {
     calendarsSelector: {
       padding: theme.spacing(1),
@@ -22,6 +22,7 @@ const useStyles = makeStyles((theme) => {
       padding: theme.spacing(1),
       marginBottom: theme.spacing(1),
       borderRadius: theme.borderRadius,
+      cursor: 'pointer',
     },
     calendarItemSelected: {
       background: '#fefefe',

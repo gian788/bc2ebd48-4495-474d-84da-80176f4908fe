@@ -43,11 +43,11 @@ export const getCalendars = async () => {
 
     return response.result.items;
   } catch (error) {
-    console.log(JSON.stringify(error, null, 2));
+    // console.log(JSON.stringify(error, null, 2));
   }
 };
 
-export const getEventsByCalendarIds = async (calendarIds) => {
+export const getEventsByCalendarIds = async calendarIds => {
   try {
     await checkAuth();
     const timeMin = moment().startOf('week').toISOString();
@@ -55,7 +55,7 @@ export const getEventsByCalendarIds = async (calendarIds) => {
     const eventsByCalendarIds = {};
 
     await Promise.all(
-      map(async (id) => {
+      map(async id => {
         const response = await gapi.client.calendar.events.list({
           calendarId: id,
           timeMin,
@@ -66,7 +66,7 @@ export const getEventsByCalendarIds = async (calendarIds) => {
           orderBy: 'startTime',
         });
         eventsByCalendarIds[id] = response.result.items;
-        forEach((event) => {
+        forEach(event => {
           event.calendarId = id;
         }, eventsByCalendarIds[id]);
       }, calendarIds),

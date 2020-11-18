@@ -18,14 +18,10 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "lint-staged": "./lint-staged.sh"
   },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
-  },
+  "pre-commit": "lint-staged",
   "browserslist": {
     "production": [
       ">0.2%",
@@ -42,7 +38,9 @@
     "@testing-library/jest-dom": "^5.11.6",
     "@testing-library/react": "^11.1.2",
     "@testing-library/user-event": "^12.2.2",
+    "eslint-plugin-no-only-tests": "^2.4.0",
     "faker": "^5.1.0",
+    "pre-commit": "^1.2.2",
     "prettier": "^2.1.2",
     "uuid": "^8.3.1"
   }
