@@ -1,26 +1,14 @@
 import { useEffect, useState } from 'react';
 import moment from 'moment';
 import clsx from 'clsx';
-import {
-  times,
-  map,
-  filter,
-  get,
-  find,
-  flow,
-  values,
-  flatten,
-  keyBy,
-  mapValues,
-  omit,
-  keys,
-} from 'lodash/fp';
+import { times, map, filter, get, find, flow, values, flatten, keyBy, mapValues } from 'lodash/fp';
 import { makeStyles } from '@material-ui/styles';
-import './App.css';
 import Header from './Header';
 import { getEventsByCalendarIds, getCalendars } from './googleCalendarApi';
+import CalendarsSelector from './CalendarsSelector';
 
 const dayHourBlockHeight = 100;
+const startOfTheWeek = moment().startOf('week').add(1, 'days'); // to start the week on monday
 
 const useStyles = makeStyles((theme) => {
   console.log(theme);
@@ -29,14 +17,22 @@ const useStyles = makeStyles((theme) => {
       display: 'flex',
       flexDirection: 'column',
       background: theme.palette.background,
+      height: '100vh',
+      width: '100vw',
     },
     main: {
       display: 'flex',
+      padding: theme.spacing(2),
+      height: 'calc(100% - 50px)',
     },
     calendar: {
       background: theme.palette.paper,
       display: 'flex',
+      flexDirection: 'column',
       marginBottom: theme.spacing(4),
+      width: '100%',
+
+      borderRadius: theme.borderRadius,
     },
     dayHeader: {
       padding: theme.spacing(2),
@@ -44,21 +40,34 @@ const useStyles = makeStyles((theme) => {
       alignItems: 'center',
       height: 60,
       boxSizing: 'border-box',
+      borderWidth: '0 1px 1px 0',
+      borderStyle: 'solid',
+      borderColor: 'silver',
     },
     dayOfTheMonth: {
       padding: theme.spacing(1),
       marginRight: theme.spacing(0.5),
+      fontWeight: 'bold',
+      fontSize: '1.2rem',
     },
     dayHourBlock: {
       height: dayHourBlockHeight,
-      borderWidth: '1px 0 0 0',
+      borderWidth: '1px 1px 0 0',
       borderStyle: 'solid',
       borderColor: 'silver',
       boxSizing: 'border-box',
     },
     cornerBlock: {
       width: 60,
-      height: 60,
+      height: '100%',
+      borderWidth: '0 1px 0 0',
+      borderStyle: 'solid',
+      borderColor: 'silver',
+      boxSizing: 'border-box',
+    },
+    legend: {
+      flexGrow: 0,
+      paddingTop: 6,
     },
     hourBlockLegend: {
       height: dayHourBlockHeight,
@@ -68,41 +77,28 @@ const useStyles = makeStyles((theme) => {
       display: 'flex',
       alignItems: 'flex-end',
       justifyContent: 'flex-end',
-    },
-    header: {
-      display: 'flex',
+      paddingRight: 2,
+
+      borderWidth: '0 1px 0 0',
+      borderStyle: 'solid',
+      borderColor: 'silver',
+      boxSizing: 'border-box',
     },
     dayOfTheMonthToday: {
       borderRadius: '50%',
       background: theme.palette.primary,
       color: 'white',
     },
-    body: {
+    calendarBody: {
       display: 'flex',
+      overflowX: 'scroll',
     },
     dayColumn: {
-      borderWidth: '0 0 0 1px',
-      borderStyle: 'solid',
-      borderColor: 'silver',
-    },
-
-    leftBar: {
-      padding: theme.spacing(1),
-    },
-    calendarIcon: {
-      width: theme.spacing(2),
-      height: theme.spacing(2),
-      marginRight: theme.spacing(0.5),
-      borderRadius: '50%',
-    },
-    calendarItem: {
-      display: 'flex',
-      alignItems: 'center',
-      padding: theme.spacing(1),
-    },
-    dayHourBlockContainer: {
+      flexGrow: 1,
+      width: 'calc(100% / 7 - 60px)',
       position: 'relative',
     },
+
     event: {
       position: 'absolute',
       left: 0,
@@ -111,24 +107,72 @@ const useStyles = makeStyles((theme) => {
       padding: theme.spacing(1),
       boxSizing: 'border-box',
       fontSize: '0.8rem',
+      borderRadius: theme.borderRadius,
     },
     eventSummary: {
       fontWeight: 'bold',
     },
     eventTime: {},
-    calendarItemSelected: {
-      background: '#fefefe',
+    calendarHeader: {
+      display: 'flex',
+      height: 60,
+      width: '100%',
     },
   };
 });
 
-function App() {
+const CalendarHeader = () => {
   const classes = useStyles();
-  const startOfTheWeek = moment().startOf('week').add(1, 'days'); // to start the week on monday
+  return (
+    <div className={classes.calendarHeader}>
+      <div className={classes.cornerBlock}></div>
+      {times((i) => {
+        const day = moment(startOfTheWeek).add(i, 'days');
+
+        return (
+          <div className={classes.dayColumn}>
+            <div className={classes.dayHeader}>
+              <div
+                className={clsx(classes.dayOfTheMonth, {
+                  [classes.dayOfTheMonthToday]: moment().dayOfYear() === day.dayOfYear(),
+                })}
+              >
+                {day.format('D')}
+              </div>
+              <div className={classes.dayOfThWeek}>{day.format('dddd')}</div>
+            </div>
+          </div>
+        );
+      }, 7)}
+    </div>
+  );
+};
+
+const Legend = () => {
+  const classes = useStyles();
+  return (
+    <div className={classes.legend}>
+      {times((i) => {
+        return (
+          <div className={classes.hourBlockLegend}>
+            {moment()
+              .set('hour', i + 1)
+              .format('h a')}
+          </div>
+        );
+      }, 24)}
+    </div>
+  );
+};
+
+const App = () => {
+  const classes = useStyles();
+
   const [eventsByCalendarIds, setEventsByCalendarIds] = useState({});
   const [calendars, setCalendars] = useState([]);
   const [selectedCalendars, setSelectedCalendars] = useState([]);
   useEffect(() => {
+    document.getElementById('calendarBody').scrollTop = dayHourBlockHeight * 8 + 1;
     getCalendars().then(setCalendars);
     getCalendars().then((calendars) => {
       setCalendars(calendars);
@@ -159,62 +203,25 @@ function App() {
       <Header />
 
       <main className={classes.main}>
-        <div className={classes.leftBar}>
-          <div>CALENDARS</div>
-          <div>
-            {map(
-              ({ id, backgroundColor, summary }) => (
-                <div
-                  className={clsx(classes.calendarItem, {
-                    [classes.calendarItemSelected]: selectedCalendars[id],
-                  })}
-                  onClick={() =>
-                    setSelectedCalendars({ ...selectedCalendars, [id]: !selectedCalendars[id] })
-                  }
-                >
-                  <div className={classes.calendarIcon} style={{ backgroundColor }} />
-                  <div>{summary}</div>
-                </div>
-              ),
-              calendars,
-            )}
-          </div>
-        </div>
+        <CalendarsSelector
+          calendars={calendars}
+          selectedCalendars={selectedCalendars}
+          setSelectedCalendars={setSelectedCalendars}
+        />
         <div className={classes.calendar}>
-          <div className={classes.legend}>
-            <div className={classes.cornerBlock}></div>
+          <CalendarHeader />
+          <div className={classes.calendarBody} id="calendarBody">
+            <Legend />
+
             {times((i) => {
-              return (
-                <div className={classes.hourBlockLegend}>
-                  {moment()
-                    .set('hour', i + 1)
-                    .format('h a')}
-                </div>
+              const day = moment(startOfTheWeek).add(i, 'days');
+              const dayEvents = filter(
+                ({ start, end }) => moment(start.dateTime).diff(day, 'days') === 0,
+                events,
               );
-            }, 24)}
-          </div>
 
-          {times((i) => {
-            const day = moment(startOfTheWeek).add(i, 'days');
-            const dayEvents = filter(
-              ({ start, end }) => moment(start.dateTime).diff(day, 'days') === 0,
-              events,
-            );
-
-            return (
-              <div className={classes.dayColumn}>
-                <div className={classes.dayHeader}>
-                  <div
-                    className={clsx(classes.dayOfTheMonth, {
-                      [classes.dayOfTheMonthToday]: moment().dayOfYear() === day.dayOfYear(),
-                    })}
-                  >
-                    {day.format('D')}
-                  </div>
-                  <div className={classes.dayOfThWeek}>{day.format('dddd')}</div>
-                </div>
-
-                <div className={classes.dayHourBlockContainer}>
+              return (
+                <div className={classes.dayColumn}>
                   {map((event) => {
                     const top = moment(event.start.dateTime).hours() * dayHourBlockHeight;
                     const minutes = moment(event.end.dateTime).diff(
@@ -245,13 +252,13 @@ function App() {
                     24,
                   )}
                 </div>
-              </div>
-            );
-          }, 7)}
+              );
+            }, 7)}
+          </div>
         </div>
       </main>
     </div>
   );
-}
+};
 
 export default App;

@@ -1,5 +1,6 @@
 const theme = {
   spacing: (n) => n * 8,
+  borderRadius: 4,
   palette: {
     background: '#f5f4f0',
     paper: '#fefefe',

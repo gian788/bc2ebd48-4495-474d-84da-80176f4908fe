@@ -6,6 +6,7 @@ const useStyles = makeStyles((theme) => {
   return {
     header: {
       padding: theme.spacing(2),
+      borderBottom: '1px solid silver',
     },
   };
 });
