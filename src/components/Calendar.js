@@ -113,7 +113,7 @@ const CalendarHeader = () => {
         const day = moment(startOfTheWeek).add(i, 'days');
 
         return (
-          <div className={classes.dayColumn}>
+          <div className={classes.dayColumn} key={i}>
             <div className={classes.dayHeader}>
               <div
                 className={clsx(classes.dayOfTheMonth, {
@@ -137,7 +137,7 @@ const Legend = () => {
     <div className={classes.legend}>
       {times((i) => {
         return (
-          <div className={classes.hourBlockLegend}>
+          <div className={classes.hourBlockLegend} key={i}>
             {moment()
               .set('hour', i + 1)
               .format('h a')}
@@ -183,16 +183,16 @@ const Calendar = ({ events, calendars }) => {
           );
 
           return (
-            <div className={classes.dayColumn}>
+            <div className={classes.dayColumn} key={i}>
               {map(
                 (event) => (
-                  <Event event={event} calendars={calendars} />
+                  <Event event={event} calendars={calendars} key={event.id} />
                 ),
                 dayEvents,
               )}
               {times(
                 (i) => (
-                  <div className={classes.dayHourBlock}></div>
+                  <div className={classes.dayHourBlock} key={i}></div>
                 ),
                 24,
               )}

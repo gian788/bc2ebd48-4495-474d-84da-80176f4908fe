@@ -29,16 +29,23 @@ const useStyles = makeStyles((theme) => {
   };
 });
 
-const CalendarsSelector = ({ calendars, selectedCalendars, setSelectedCalendars }) => {
+const CalendarsSelector = ({ calendars = [], selectedCalendars = {}, setSelectedCalendars }) => {
   const classes = useStyles();
 
   return (
     <div className={classes.calendarsSelector}>
-      <div className={classes.title}>CALENDARS</div>
+      <div className={classes.title} data-testid="calendar-selctor-title">
+        CALENDARS
+      </div>
       <div>
+        {!calendars.length && (
+          <div data-testid="calendar-selctor-no-calendar">No calendar found</div>
+        )}
         {map(
           ({ id, backgroundColor, summary }) => (
             <div
+              key={id}
+              data-testid="calendar-selctor-item"
               className={clsx(classes.calendarItem, {
                 [classes.calendarItemSelected]: selectedCalendars[id],
               })}
@@ -46,7 +53,11 @@ const CalendarsSelector = ({ calendars, selectedCalendars, setSelectedCalendars 
                 setSelectedCalendars({ ...selectedCalendars, [id]: !selectedCalendars[id] })
               }
             >
-              <div className={classes.calendarIcon} style={{ backgroundColor }} />
+              <div
+                data-testid="calendar-selctor-item-dot"
+                className={classes.calendarIcon}
+                style={{ backgroundColor }}
+              />
               <div>{summary}</div>
             </div>
           ),

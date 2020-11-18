@@ -55,10 +55,6 @@ const App = () => {
     getEventsByCalendarIds(map('id', calendars)).then(setEventsByCalendarIds);
   }, [calendars]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  console.log('app events', events);
-  console.log('app calendars', calendars);
-  console.log('app selected calendars', selectedCalendars);
-
   return (
     <div className={classes.app}>
       <Header />
