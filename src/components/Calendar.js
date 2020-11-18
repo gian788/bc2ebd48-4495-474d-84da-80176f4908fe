@@ -18,10 +18,12 @@ const useStyles = makeStyles(theme => {
       borderColor: theme.palette.borderColor,
       borderRadius: theme.borderRadius,
     },
+
     dayHeader: {
       padding: theme.spacing(2),
       display: 'flex',
       alignItems: 'center',
+      justifyContent: 'center',
       height: 60,
       boxSizing: 'border-box',
       borderWidth: '0 1px 0 0',
@@ -33,6 +35,12 @@ const useStyles = makeStyles(theme => {
       marginRight: theme.spacing(0.5),
       fontWeight: 'bold',
       fontSize: '1.2rem',
+    },
+    dayOfThWeek: {
+      fontWeight: theme.typography.fontWeight.light,
+    },
+    dayOfThWeekToday: {
+      fontWeight: theme.typography.fontWeight.regular,
     },
     dayHourBlock: {
       height: dayHourBlockHeight,
@@ -125,7 +133,13 @@ const CalendarHeader = () => {
               >
                 {day.format('D')}
               </div>
-              <div className={classes.dayOfThWeek}>{day.format('dddd')}</div>
+              <div
+                className={clsx(classes.dayOfThWeek, {
+                  [classes.dayOfThWeekToday]: moment().dayOfYear() === day.dayOfYear(),
+                })}
+              >
+                {day.format('dddd')}
+              </div>
             </div>
           </div>
         );

@@ -6,6 +6,8 @@ const useStyles = makeStyles(theme => {
   return {
     calendarsSelector: {
       padding: theme.spacing(1),
+      marginRight: theme.spacing(2),
+      minWidth: 150,
     },
     title: {
       marginBottom: theme.spacing(1),
@@ -13,7 +15,7 @@ const useStyles = makeStyles(theme => {
     calendarIcon: {
       width: theme.spacing(2),
       height: theme.spacing(2),
-      marginRight: theme.spacing(0.5),
+      marginRight: theme.spacing(1),
       borderRadius: '50%',
     },
     calendarItem: {
@@ -26,6 +28,16 @@ const useStyles = makeStyles(theme => {
     },
     calendarItemSelected: {
       background: '#fefefe',
+    },
+    calendarNoCalendars: {
+      fontWeight: theme.typography.fontWeight.light,
+      fontStyle: 'italic',
+      fontSize: '0.85rem',
+    },
+    calendarName: {
+      whiteSpace: 'nowrap',
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
     },
   };
 });
@@ -40,7 +52,9 @@ const CalendarsSelector = ({ calendars = [], selectedCalendars = {}, setSelected
       </div>
       <div>
         {!calendars.length && (
-          <div data-testid="calendar-selctor-no-calendar">No calendar found</div>
+          <div data-testid="calendar-selctor-no-calendar" className={classes.calendarNoCalendars}>
+            No calendar found
+          </div>
         )}
         {map(
           ({ id, backgroundColor, summary }) => (
@@ -59,7 +73,7 @@ const CalendarsSelector = ({ calendars = [], selectedCalendars = {}, setSelected
                 className={classes.calendarIcon}
                 style={{ backgroundColor }}
               />
-              <div>{summary}</div>
+              <div className={classes.calendarName}>{summary}</div>
             </div>
           ),
           calendars,
