@@ -9,6 +9,9 @@ const theme = {
     primary: '#5968e1',
     borderColor: '#ececec',
   },
+  shadow: {
+    2: '4px 4px 6px -5px rgba(0,0,0,0.2)',
+  },
   typography: {
     fontWeight: {
       light: 300,

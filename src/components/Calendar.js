@@ -17,6 +17,7 @@ const useStyles = makeStyles(theme => {
       borderStyle: 'solid',
       borderColor: theme.palette.borderColor,
       borderRadius: theme.borderRadius,
+      boxShadow: theme.shadow[2],
     },
 
     dayHeader: {

@@ -28,6 +28,7 @@ const useStyles = makeStyles(theme => {
     },
     calendarItemSelected: {
       background: '#fefefe',
+      boxShadow: theme.shadow[2],
     },
     calendarNoCalendars: {
       fontWeight: theme.typography.fontWeight.light,
