@@ -34,6 +34,11 @@ const useStyles = makeStyles(theme => {
       fontStyle: 'italic',
       fontSize: '0.85rem',
     },
+    calendarLoadingCalendars: {
+      fontWeight: theme.typography.fontWeight.light,
+      fontStyle: 'italic',
+      fontSize: '0.85rem',
+    },
     calendarName: {
       whiteSpace: 'nowrap',
       overflow: 'hidden',
@@ -42,7 +47,12 @@ const useStyles = makeStyles(theme => {
   };
 });
 
-const CalendarsSelector = ({ calendars = [], selectedCalendars = {}, setSelectedCalendars }) => {
+const CalendarsSelector = ({
+  calendars = [],
+  isLoading,
+  selectedCalendars = {},
+  setSelectedCalendars,
+}) => {
   const classes = useStyles();
 
   return (
@@ -51,7 +61,12 @@ const CalendarsSelector = ({ calendars = [], selectedCalendars = {}, setSelected
         CALENDARS
       </div>
       <div>
-        {!calendars.length && (
+        {isLoading && (
+          <div data-testid="calendar-selctor-loading" className={classes.calendarLoadingCalendars}>
+            Loading calendars...
+          </div>
+        )}
+        {!calendars.length && !isLoading && (
           <div data-testid="calendar-selctor-no-calendar" className={classes.calendarNoCalendars}>
             No calendar found
           </div>

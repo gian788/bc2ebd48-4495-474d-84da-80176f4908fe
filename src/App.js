@@ -1,10 +1,15 @@
 import { useEffect, useState } from 'react';
-import { map, filter, flow, values, flatten, keyBy, mapValues } from 'lodash/fp';
+import { connect } from 'react-redux';
+import { map, filter, flow, keyBy, mapValues } from 'lodash/fp';
 import { makeStyles } from '@material-ui/styles';
-import Header from './components/Header';
-import { getEventsByCalendarIds, getCalendars } from './googleCalendarApi';
-import CalendarsSelector from './components/CalendarsSelector';
 import Calendar from './components/Calendar';
+import CalendarsSelector from './components/CalendarsSelector';
+import Header from './components/Header';
+import { fetchCalendars } from './state/calendars/actions';
+import { getCalendars } from './state/calendars/selectors';
+import { fetchEventsByCalendarIds } from './state/events/actions';
+import { getEvents } from './state/events/selectors';
+import { isLoading } from './state/resourceStatus/selectors';
 
 const dayHourBlockHeight = 100;
 
@@ -27,33 +32,33 @@ const useStyles = makeStyles(theme => {
   };
 });
 
-const App = () => {
+const App = ({
+  calendars,
+  events,
+  areCalendarsLoading,
+  fetchCalendars,
+  fetchEventsByCalendarIds,
+}) => {
   const classes = useStyles();
-  const [calendars, setCalendars] = useState([]);
   const [selectedCalendars, setSelectedCalendars] = useState([]);
-  const [eventsByCalendarIds, setEventsByCalendarIds] = useState({});
-  const events = flow(
-    values,
-    flatten,
-    filter(({ calendarId }) => selectedCalendars[calendarId]),
-  )(eventsByCalendarIds);
+  const filteredEvents = filter(({ calendarId }) => selectedCalendars[calendarId], events);
 
   useEffect(() => {
     document.getElementById('calendarBody').scrollTop = dayHourBlockHeight * 8 + 1; // shows calendar from 8am
 
-    getCalendars().then(calendars => {
-      setCalendars(calendars);
+    fetchCalendars();
+  }, [fetchCalendars]);
+
+  useEffect(() => {
+    if (calendars.length) {
+      fetchEventsByCalendarIds(map('id', calendars));
       setSelectedCalendars(
         flow(
           keyBy('id'),
           mapValues(v => true),
         )(calendars),
       );
-    });
-  }, []);
-
-  useEffect(() => {
-    getEventsByCalendarIds(map('id', calendars)).then(setEventsByCalendarIds);
+    }
   }, [calendars]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
@@ -65,11 +70,23 @@ const App = () => {
           calendars={calendars}
           selectedCalendars={selectedCalendars}
           setSelectedCalendars={setSelectedCalendars}
+          isLoading={areCalendarsLoading}
         />
-        <Calendar events={events} calendars={calendars} />
+        <Calendar events={filteredEvents} calendars={calendars} />
       </main>
     </div>
   );
 };
 
-export default App;
+const mapStateToProps = state => ({
+  calendars: getCalendars(state),
+  events: getEvents(state),
+  areCalendarsLoading: isLoading('calendars')(state),
+});
+
+const mapDispatchToProps = dispatch => ({
+  fetchCalendars: () => dispatch(fetchCalendars()),
+  fetchEventsByCalendarIds: calendarIds => dispatch(fetchEventsByCalendarIds(calendarIds)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);
