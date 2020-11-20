@@ -5,6 +5,7 @@ import { connectRouter, routerMiddleware } from 'connected-react-router';
 
 import events from './events/reducer';
 import calendars from './calendars/reducer';
+import notifications from './notifications/reducer';
 import resourceStatus from './resourceStatus/reducer';
 
 export const history = createBrowserHistory();
@@ -12,6 +13,7 @@ export const history = createBrowserHistory();
 export const reducers = {
   calendars,
   events,
+  notifications,
   resourceStatus,
 };
 

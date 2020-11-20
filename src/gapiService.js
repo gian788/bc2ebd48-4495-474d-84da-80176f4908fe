@@ -13,13 +13,13 @@ var SCOPES = 'https://www.googleapis.com/auth/calendar.readonly';
 const checkAuth = async () =>
   new Promise((resolve, reject) => {
     gapi.load('client:auth2', async () => {
-      await gapi.client.init({
-        apiKey,
-        clientId,
-        discoveryDocs: DISCOVERY_DOCS,
-        scope: SCOPES,
-      });
       try {
+        await gapi.client.init({
+          apiKey,
+          clientId,
+          discoveryDocs: DISCOVERY_DOCS,
+          scope: SCOPES,
+        });
         const isSignedIn = gapi.auth2.getAuthInstance().isSignedIn.get();
         if (!isSignedIn) {
           gapi.auth2.getAuthInstance().signIn();

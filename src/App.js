@@ -4,6 +4,7 @@ import { map, filter, flow, keyBy, mapValues } from 'lodash/fp';
 import { makeStyles } from '@material-ui/styles';
 import Calendar from './components/Calendar';
 import CalendarsSelector from './components/CalendarsSelector';
+import ErrorNotification from './components/ErrorNotification';
 import Header from './components/Header';
 import { fetchCalendars } from './state/calendars/actions';
 import { getCalendars } from './state/calendars/selectors';
@@ -74,6 +75,8 @@ const App = ({
         />
         <Calendar events={filteredEvents} calendars={calendars} />
       </main>
+
+      <ErrorNotification />
     </div>
   );
 };
