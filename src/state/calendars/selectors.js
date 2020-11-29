@@ -1,3 +1,3 @@
 import { get } from 'lodash/fp';
 
-export const getCalendars = get('calendars.list');
+export const getCalendarsById = get('calendars.byId');

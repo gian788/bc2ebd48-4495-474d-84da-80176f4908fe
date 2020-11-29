@@ -1,5 +1,5 @@
 import { differenceInMinutes, format as formatDate, getHours, getMinutes } from 'date-fns';
-import { get, find } from 'lodash/fp';
+import { get } from 'lodash/fp';
 import { makeStyles } from '@material-ui/styles';
 import { getEventStartDate, getEventEndDate } from '../../dateUtils';
 import { dayHourBlockHeight } from './HourBlock';
@@ -22,14 +22,14 @@ const useStyles = makeStyles(theme => {
   };
 });
 
-const Event = ({ event, calendars }) => {
+const Event = ({ event, calendar }) => {
   const classes = useStyles();
   const startDate = getEventStartDate(event);
   const endDate = getEventEndDate(event);
   const top = (getHours(startDate) + getMinutes(startDate) / 60) * dayHourBlockHeight;
   const duration = differenceInMinutes(endDate, startDate);
   const height = (duration / 60) * dayHourBlockHeight;
-  const backgroundColor = get('backgroundColor', find({ id: event.calendarId }, calendars));
+  const backgroundColor = get('backgroundColor', calendar);
 
   return (
     <div className={classes.event} style={{ top, height, backgroundColor }}>

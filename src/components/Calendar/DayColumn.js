@@ -13,14 +13,14 @@ const useStyles = makeStyles(theme => {
   };
 });
 
-const DayColumn = ({ events, calendars }) => {
+const DayColumn = ({ events, calendarsById }) => {
   const classes = useStyles();
 
   return (
     <div className={classes.dayColumn}>
       {map(
         event => (
-          <Event event={event} calendars={calendars} key={event.id} />
+          <Event event={event} calendar={calendarsById[event.calendarId]} key={event.id} />
         ),
         events,
       )}

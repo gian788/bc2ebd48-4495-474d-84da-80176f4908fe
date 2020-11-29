@@ -1,15 +1,21 @@
-import { flow, values, flatten } from 'lodash/fp';
+import { format as formatDate } from 'date-fns';
+import { flow, values, flatten, groupBy } from 'lodash/fp';
+import { getEventStartDate } from '../../dateUtils';
 import { EVENTS_FECTH_SUCCESS } from './actions';
 
 const defaultState = {
-  list: [],
+  byDate: {},
 };
 
 const reducers = (state = defaultState, action) => {
   switch (action.type) {
     case EVENTS_FECTH_SUCCESS:
-      const list = flow(values, flatten)(action.events);
-      return { ...state, list };
+      const byDate = flow(
+        values,
+        flatten,
+        groupBy(event => formatDate(getEventStartDate(event), 'yyyy-MM-dd')),
+      )(action.events);
+      return { ...state, byDate };
     default:
       return state;
   }

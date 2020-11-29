@@ -1,3 +1,3 @@
 import { get } from 'lodash/fp';
 
-export const getEvents = get('events.list');
+export const getEventsByDate = get('events.byDate');

@@ -14,10 +14,10 @@ const useStyles = makeStyles(theme => {
   };
 });
 
-const HourBlock = ({ key }) => {
+const HourBlock = () => {
   const classes = useStyles();
 
-  return <div className={classes.dayHourBlock} key={key} />;
+  return <div className={classes.dayHourBlock} />;
 };
 
 export default HourBlock;

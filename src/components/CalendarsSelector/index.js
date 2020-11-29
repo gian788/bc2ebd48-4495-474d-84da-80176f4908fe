@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import { map } from 'lodash/fp';
+import { isEmpty, map, values } from 'lodash/fp';
 import { makeStyles } from '@material-ui/styles';
 
 const useStyles = makeStyles(theme => {
@@ -49,7 +49,7 @@ const useStyles = makeStyles(theme => {
 });
 
 const CalendarsSelector = ({
-  calendars = [],
+  calendarsById = {},
   isLoading,
   selectedCalendars = {},
   setSelectedCalendars,
@@ -67,7 +67,7 @@ const CalendarsSelector = ({
             Loading calendars...
           </div>
         )}
-        {!calendars.length && !isLoading && (
+        {isEmpty(calendarsById) && !isLoading && (
           <div data-testid="calendar-selctor-no-calendar" className={classes.calendarNoCalendars}>
             No calendar found
           </div>
@@ -92,7 +92,7 @@ const CalendarsSelector = ({
               <div className={classes.calendarName}>{summary}</div>
             </div>
           ),
-          calendars,
+          values(calendarsById),
         )}
       </div>
     </div>

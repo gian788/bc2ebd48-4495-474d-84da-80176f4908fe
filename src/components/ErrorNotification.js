@@ -40,7 +40,7 @@ const Notification = ({ notifications, hideNotification }) => {
       <div className={classes.toast} key={id}>
         {message}
         <div className={classes.closeButton} onClick={() => hideNotification(id)}>
-          <i class="material-icons">highlight_off</i>
+          <i className="material-icons">highlight_off</i>
         </div>
       </div>
     ),

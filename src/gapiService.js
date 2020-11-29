@@ -1,6 +1,6 @@
-import moment from 'moment';
 import { map, forEach } from 'lodash/fp';
 import { apiKey, clientId } from './config';
+import { endOfTheWeek, startOfTheWeek } from './dateUtils';
 
 const gapi = window.gapi;
 
@@ -43,8 +43,8 @@ export const getCalendars = async () => {
 
 export const getEventsByCalendarIds = async calendarIds => {
   await checkAuth();
-  const timeMin = moment().startOf('week').toISOString();
-  const timeMax = moment().endOf('week').toISOString();
+  const timeMin = startOfTheWeek().toISOString();
+  const timeMax = endOfTheWeek().toISOString();
   const eventsByCalendarIds = {};
 
   await Promise.all(
@@ -64,5 +64,6 @@ export const getEventsByCalendarIds = async calendarIds => {
       }, eventsByCalendarIds[id]);
     }, calendarIds),
   );
+
   return eventsByCalendarIds;
 };

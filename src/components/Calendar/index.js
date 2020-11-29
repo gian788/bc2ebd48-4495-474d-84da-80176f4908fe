@@ -1,10 +1,11 @@
-import { isSameDay } from 'date-fns';
-import { filter } from 'lodash/fp';
+import { format as formatDate } from 'date-fns';
+import { getOr } from 'lodash/fp';
 import { makeStyles } from '@material-ui/styles';
-import { mapWeekDays, getEventStartDate } from '../../dateUtils';
+import { mapWeekDays } from '../../dateUtils';
 import DayColumn from './DayColumn';
 import CalendarHeader from './Header';
 import HoursLegend from './HoursLegend';
+import { dayHourBlockHeight } from './HourBlock';
 
 const useStyles = makeStyles(theme => {
   return {
@@ -27,10 +28,11 @@ const useStyles = makeStyles(theme => {
   };
 });
 
-const getEventsOfTheDay = (day, events) =>
-  filter(event => isSameDay(getEventStartDate(event), day), events);
+// shows calendar from 8am
+export const scrollCalendarTo8am = () =>
+  (document.getElementById('calendarBody').scrollTop = dayHourBlockHeight * 8 + 1);
 
-const Calendar = ({ events, calendars }) => {
+const Calendar = ({ eventsByDay, calendarsById }) => {
   const classes = useStyles();
 
   return (
@@ -41,8 +43,8 @@ const Calendar = ({ events, calendars }) => {
         {mapWeekDays(day => (
           <DayColumn
             day={day}
-            events={getEventsOfTheDay(day, events)}
-            calendars={calendars}
+            events={getOr([], formatDate(day, 'yyyy-MM-dd'), eventsByDay)}
+            calendarsById={calendarsById}
             key={day.getTime()}
           />
         ))}
