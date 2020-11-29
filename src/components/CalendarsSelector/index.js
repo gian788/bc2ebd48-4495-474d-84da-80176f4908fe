@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import { map } from 'lodash/fp';
+import { isEmpty, map, values } from 'lodash/fp';
 import { makeStyles } from '@material-ui/styles';
 
 const useStyles = makeStyles(theme => {
@@ -28,8 +28,14 @@ const useStyles = makeStyles(theme => {
     },
     calendarItemSelected: {
       background: '#fefefe',
+      boxShadow: theme.shadow[2],
     },
     calendarNoCalendars: {
+      fontWeight: theme.typography.fontWeight.light,
+      fontStyle: 'italic',
+      fontSize: '0.85rem',
+    },
+    calendarLoadingCalendars: {
       fontWeight: theme.typography.fontWeight.light,
       fontStyle: 'italic',
       fontSize: '0.85rem',
@@ -42,7 +48,12 @@ const useStyles = makeStyles(theme => {
   };
 });
 
-const CalendarsSelector = ({ calendars = [], selectedCalendars = {}, setSelectedCalendars }) => {
+const CalendarsSelector = ({
+  calendarsById = {},
+  isLoading,
+  selectedCalendars = {},
+  setSelectedCalendars,
+}) => {
   const classes = useStyles();
 
   return (
@@ -51,7 +62,12 @@ const CalendarsSelector = ({ calendars = [], selectedCalendars = {}, setSelected
         CALENDARS
       </div>
       <div>
-        {!calendars.length && (
+        {isLoading && (
+          <div data-testid="calendar-selctor-loading" className={classes.calendarLoadingCalendars}>
+            Loading calendars...
+          </div>
+        )}
+        {isEmpty(calendarsById) && !isLoading && (
           <div data-testid="calendar-selctor-no-calendar" className={classes.calendarNoCalendars}>
             No calendar found
           </div>
@@ -76,7 +92,7 @@ const CalendarsSelector = ({ calendars = [], selectedCalendars = {}, setSelected
               <div className={classes.calendarName}>{summary}</div>
             </div>
           ),
-          calendars,
+          values(calendarsById),
         )}
       </div>
     </div>

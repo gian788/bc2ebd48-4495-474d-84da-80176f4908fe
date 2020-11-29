@@ -8,6 +8,10 @@ const theme = {
     paper: '#fefefe',
     primary: '#5968e1',
     borderColor: '#ececec',
+    error: '#D32F2F',
+  },
+  shadow: {
+    2: '4px 4px 6px -5px rgba(0,0,0,0.2)',
   },
   typography: {
     fontWeight: {

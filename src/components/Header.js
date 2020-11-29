@@ -1,4 +1,4 @@
-import moment from 'moment';
+import { format as formatDate } from 'date-fns';
 import { makeStyles } from '@material-ui/styles';
 
 const useStyles = makeStyles(theme => {
@@ -13,7 +13,7 @@ const useStyles = makeStyles(theme => {
 
 const Header = () => {
   const classes = useStyles();
-  return <header className={classes.header}>{moment().format('MMMM, YYYY')}</header>;
+  return <header className={classes.header}>{formatDate(new Date(), 'MMMM, yyyy')}</header>;
 };
 
 export default Header;
