@@ -4,14 +4,10 @@
   "private": true,
   "dependencies": {
     "@material-ui/styles": "^4.10.0",
-    "@testing-library/jest-dom": "^5.11.4",
-    "@testing-library/react": "^11.1.0",
-    "@testing-library/user-event": "^12.1.10",
     "clsx": "^1.1.1",
     "googleapis": "^65.0.0",
     "lodash": "^4.17.20",
     "moment": "^2.29.1",
-    "prettier": "^2.1.2",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-scripts": "4.0.0",
@@ -22,14 +18,11 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "lint-file": "eslint",
+    "lint-staged": "./lint-staged.sh"
   },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
-  },
+  "pre-commit": "lint-staged",
   "browserslist": {
     "production": [
       ">0.2%",
@@ -41,5 +34,15 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "^5.11.6",
+    "@testing-library/react": "^11.1.2",
+    "@testing-library/user-event": "^12.2.2",
+    "eslint-plugin-no-only-tests": "^2.4.0",
+    "faker": "^5.1.0",
+    "pre-commit": "^1.2.2",
+    "prettier": "^2.1.2",
+    "uuid": "^8.3.1"
   }
 }

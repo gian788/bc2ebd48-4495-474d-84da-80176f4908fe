@@ -9,8 +9,7 @@ const gapi = window.gapi;
 // Array of API discovery doc URLs for APIs used by the quickstart
 var DISCOVERY_DOCS = ['https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest'];
 
-// Authorization scopes required by the API; multiple scopes can be
-// included, separated by spaces.
+// Authorization scopes required by the API; multiple scopes can be included, separated by spaces.
 var SCOPES = 'https://www.googleapis.com/auth/calendar.readonly';
 
 const checkAuth = async () =>
@@ -22,10 +21,10 @@ const checkAuth = async () =>
         discoveryDocs: DISCOVERY_DOCS,
         scope: SCOPES,
       });
-
       try {
         const isSignedIn = gapi.auth2.getAuthInstance().isSignedIn.get();
         if (!isSignedIn) {
+          // gapi.auth2.getAuthInstance().signOut();
           gapi.auth2.getAuthInstance().signIn();
         } else {
           resolve();
@@ -43,11 +42,11 @@ export const getCalendars = async () => {
 
     return response.result.items;
   } catch (error) {
-    console.log(JSON.stringify(error, null, 2));
+    // console.log(JSON.stringify(error, null, 2));
   }
 };
 
-export const getEventsByCalendarIds = async (calendarIds) => {
+export const getEventsByCalendarIds = async calendarIds => {
   try {
     await checkAuth();
     const timeMin = moment().startOf('week').toISOString();
@@ -55,7 +54,7 @@ export const getEventsByCalendarIds = async (calendarIds) => {
     const eventsByCalendarIds = {};
 
     await Promise.all(
-      map(async (id) => {
+      map(async id => {
         const response = await gapi.client.calendar.events.list({
           calendarId: id,
           timeMin,
@@ -66,7 +65,7 @@ export const getEventsByCalendarIds = async (calendarIds) => {
           orderBy: 'startTime',
         });
         eventsByCalendarIds[id] = response.result.items;
-        forEach((event) => {
+        forEach(event => {
           event.calendarId = id;
         }, eventsByCalendarIds[id]);
       }, calendarIds),
