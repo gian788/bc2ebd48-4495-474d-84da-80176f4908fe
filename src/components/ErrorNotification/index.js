@@ -1,8 +1,8 @@
 import { map } from 'lodash/fp';
 import { connect } from 'react-redux';
 import { makeStyles } from '@material-ui/styles';
-import { hideNotification } from '../state/notifications/actions';
-import { getNotifications } from '../state/notifications/selectors';
+import { hideNotification } from '../../state/notifications/actions';
+import { getNotifications } from '../../state/notifications/selectors';
 
 const useStyles = makeStyles(theme => {
   return {

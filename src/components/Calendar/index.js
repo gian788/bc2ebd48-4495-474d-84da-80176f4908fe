@@ -1,7 +1,7 @@
 import { format as formatDate } from 'date-fns';
 import { getOr } from 'lodash/fp';
 import { makeStyles } from '@material-ui/styles';
-import { mapWeekDays } from '../../dateUtils';
+import { mapWeekDays } from '../../utils/dateUtils';
 import DayColumn from './DayColumn';
 import CalendarHeader from './Header';
 import HoursLegend from './HoursLegend';

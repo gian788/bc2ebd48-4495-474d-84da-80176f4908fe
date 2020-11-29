@@ -1,6 +1,6 @@
 import { format as formatDate } from 'date-fns';
 import { makeStyles } from '@material-ui/styles';
-import { mapDayHours } from '../../dateUtils';
+import { mapDayHours } from '../../utils/dateUtils';
 import { dayHourBlockHeight } from './HourBlock';
 
 const useStyles = makeStyles(theme => {

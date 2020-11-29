@@ -1,4 +1,4 @@
-import { getEventsByCalendarIds } from '../../gapiService';
+import { getEventsByCalendarIds } from '../../utils/gapiService';
 
 export const EVENTS_FECTH_REQUEST = 'events/FETCH_REQUEST';
 export const EVENTS_FECTH_SUCCESS = 'events/FETCH_SUCCESS';

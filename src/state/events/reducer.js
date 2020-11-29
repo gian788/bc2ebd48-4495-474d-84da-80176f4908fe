@@ -1,6 +1,6 @@
 import { format as formatDate } from 'date-fns';
 import { flow, values, flatten, groupBy } from 'lodash/fp';
-import { getEventStartDate } from '../../dateUtils';
+import { getEventStartDate } from '../../utils/dateUtils';
 import { EVENTS_FECTH_SUCCESS } from './actions';
 
 const defaultState = {

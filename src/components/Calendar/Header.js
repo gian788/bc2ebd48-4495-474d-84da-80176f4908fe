@@ -1,7 +1,7 @@
 import { format as formatDate, isSameDay } from 'date-fns';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/styles';
-import { mapWeekDays } from '../../dateUtils';
+import { mapWeekDays } from '../../utils/dateUtils';
 
 const useStyles = makeStyles(theme => {
   return {

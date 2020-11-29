@@ -1,4 +1,4 @@
-import { getCalendars } from '../../gapiService';
+import { getCalendars } from '../../utils/gapiService';
 import { showNotification } from '../notifications/actions';
 
 export const CALENDARS_FECTH_REQUEST = 'calendars/FETCH_REQUEST';

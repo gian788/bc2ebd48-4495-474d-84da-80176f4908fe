@@ -1,7 +1,7 @@
 import { differenceInMinutes, format as formatDate, getHours, getMinutes } from 'date-fns';
 import { get } from 'lodash/fp';
 import { makeStyles } from '@material-ui/styles';
-import { getEventStartDate, getEventEndDate } from '../../dateUtils';
+import { getEventStartDate, getEventEndDate } from '../../utils/dateUtils';
 import { dayHourBlockHeight } from './HourBlock';
 
 const useStyles = makeStyles(theme => {

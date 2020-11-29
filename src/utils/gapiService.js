@@ -1,5 +1,5 @@
 import { map, forEach } from 'lodash/fp';
-import { apiKey, clientId } from './config';
+import { api } from '../config';
 import { endOfTheWeek, startOfTheWeek } from './dateUtils';
 
 const gapi = window.gapi;
@@ -15,8 +15,8 @@ const checkAuth = async () =>
     gapi.load('client:auth2', async () => {
       try {
         await gapi.client.init({
-          apiKey,
-          clientId,
+          apiKey: api.google.apiKey,
+          clientId: api.google.clientId,
           discoveryDocs: DISCOVERY_DOCS,
           scope: SCOPES,
         });
